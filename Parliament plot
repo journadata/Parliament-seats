@@ -1,0 +1,31 @@
+install.packages("ggplot2")
+install.packages("ggparliament")
+install.packages("readr")
+install.packages("dplyr")
+
+library(ggplot2)
+library(ggparliament)
+library(readr)
+library(dplyr)
+
+#get the data
+Resultats2017 <- read.csv("/Users/beatrizgalvez/Downloads/Resultats_2017.csv")
+
+Parlia_semicircle <- parliament_data(election_data = Resultats2017,
+                                     type = 'semicircle',
+                                     parl_rows = 4,
+                                     party_seats = Resultats2017$Escons)
+                                  
+# define your plot
+Parlament <- ggplot(Parlia_semicircle, aes(x =x, y = y, colour = Candidatura, group = Escons)) +
+  geom_parliament_seats(stat = "identity",position = "identity",size = 5) + 
+  theme_ggparliament() + 
+  labs(colour = "Candidatura", 
+       title = "Eleccions catalanes 2017", legend.position = "center") +
+  scale_color_manual(values=c("C's" = "#e8550c", "JUNTSxCAT" = "#01c4b4", "ERC-CatSí" = "#edad08", "PSC" = "#e20a15", "CatComú-Podem" = "#611b73", "CUP" = "#fef100", "PP" = "#0056a6")) +
+                               theme(legend.position = "bottom") +
+                             draw_totalseats(n = 135, type = 'semicircle') +
+                             theme(plot.title = element_text(hjust = 0.5))
+                             
+# Save it   
+ggsave("Parlamentok.png", width=8, height=5)
